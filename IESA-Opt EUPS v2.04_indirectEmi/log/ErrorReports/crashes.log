@@ -1,0 +1,24 @@
+2020/03/10 18:47:01 : Generated crash report for 'Aimms 4.71.6.8 uni x64' with dumpfile 'C:\Users\Amir Fattahi\Desktop\Local IESA-Opt\IESA-Opt v1.11b\log\ErrorReports\Aimms_x64_uni_4.71.6.8_20200310_174701_1.dmp'
+2020/03/10 18:47:08 : Not transmitting error report
+2020/06/28 15:16:46 : Generated crash report for 'Aimms 4.74.1.0 uni x64' with dumpfile 'C:\Users\Amir Fattahi\Desktop\IESA-Opt v02.13\log\ErrorReports\Aimms_x64_uni_4.74.1.0_20200628_131645_1.dmp'
+2020/06/28 15:16:47 : Not transmitting error report
+2020/06/28 15:17:42 : Generated crash report for 'Aimms 4.74.1.0 uni x64' with dumpfile 'C:\Users\Amir Fattahi\Desktop\IESA-Opt v02.13\log\ErrorReports\Aimms_x64_uni_4.74.1.0_20200628_131741_3.dmp'
+2020/06/28 15:17:43 : Not transmitting error report
+2020/06/28 18:00:27 : Generated crash report for 'Aimms 4.74.1.0 uni x64' with dumpfile 'C:\Users\Amir Fattahi\Desktop\IESA-Opt v02.13\log\ErrorReports\Aimms_x64_uni_4.74.1.0_20200628_160026_1.dmp'
+2020/06/28 18:00:29 : Not transmitting error report
+2020/08/30 21:17:03 : Generated crash report for 'Aimms 4.74.3.2 uni x64' with dumpfile 'C:\Users\user\Documents\AIMMS\IESA-Opt v02.21\log\ErrorReports\Aimms_x64_uni_4.74.3.2_20200830_191702_1.dmp'
+2020/08/30 21:17:36 : Not transmitting error report
+2021/02/18 13:13:12 : Generated crash report for 'Aimms 4.74.3.2 uni x64' with dumpfile 'C:\Users\user\Documents\AIMMS\IESA-Opt v03.03\log\ErrorReports\Aimms_x64_uni_4.74.3.2_20210218_121311_1.dmp'
+2021/02/18 13:13:50 : Transmitting error report to 'http://dumpreport.aimms.com/gsoap/mod_gsoap.dll?DumpFileService' using email='m.sanchez.dieguez@rug.nl' and comment=''
+2021/02/18 13:13:51 : Error report was succesfully received and queued with ID: 2021021812135112
+2021/02/18 13:13:51 : Removing dump file
+2021/02/18 13:14:06 : Generated crash report for 'Aimms 4.74.3.2 uni x64' with dumpfile 'C:\Users\user\Documents\AIMMS\IESA-Opt v03.03\log\ErrorReports\Aimms_x64_uni_4.74.3.2_20210218_121406_6.dmp'
+2021/02/18 13:14:10 : Not transmitting error report
+2021/05/06 12:34:11 : Generated crash report for 'Aimms 4.79.4.17 uni x64' with dumpfile 'C:\Users\user\Documents\AIMMS\IESA-Opt v03.12\log\ErrorReports\Aimms_x64_uni_4.79.4.17_20210506_103357_1.dmp'
+2021/05/06 12:58:58 : Not transmitting error report
+2021/05/06 12:58:58 : Generated crash report for 'Aimms 4.79.4.17 uni x64' with dumpfile 'C:\Users\user\Documents\AIMMS\IESA-Opt v03.12\log\ErrorReports\Aimms_x64_uni_4.79.4.17_20210506_105858_2.dmp'
+2021/05/06 12:59:01 : Not transmitting error report
+2021/05/06 13:00:55 : Generated crash report for 'Aimms 4.79.4.17 uni x64' with dumpfile 'C:\Users\user\Documents\AIMMS\IESA-Opt v03.12\log\ErrorReports\Aimms_x64_uni_4.79.4.17_20210506_110054_3.dmp'
+2021/05/06 13:11:31 : Not transmitting error report
+2021/05/06 13:11:32 : Generated crash report for 'Aimms 4.79.4.17 uni x64' with dumpfile 'C:\Users\user\Documents\AIMMS\IESA-Opt v03.12\log\ErrorReports\Aimms_x64_uni_4.79.4.17_20210506_111132_4.dmp'
+2021/05/06 13:11:33 : Not transmitting error report

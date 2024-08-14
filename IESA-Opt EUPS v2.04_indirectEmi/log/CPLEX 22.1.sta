@@ -1,0 +1,8 @@
+
+Solve problem 'Transition{ 2050 }' with 5649496 rows, 5495687 columns, and 22423814 nonzeros.
+
+Total time on 32 threads = 8883.19 sec. (3542001.36 ticks)
+
+LP - Optimal:  Objective = 7.0866550684e+05
+Solution time = 8887.17 sec.  Iterations = 537
+

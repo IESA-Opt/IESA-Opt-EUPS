@@ -1,0 +1,168 @@
+Warning at line 44 in user-defined function section "SolveTransition".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 51 in user-defined function section "SolveTransition".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 53 in user-defined function section "SolveTransition".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 59 in user-defined function section "SolveTransition".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 44 in user-defined function section "SolveTransition_IYP".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 51 in user-defined function section "SolveTransition_IYP".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 53 in user-defined function section "SolveTransition_IYP".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 59 in user-defined function section "SolveTransition_IYP".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 185 in user-defined function section "SolveTransition_IYP".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 198 in user-defined function section "SolveTransition_IYP".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 223 in user-defined function section "SolveTransition_IYP".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 244 in user-defined function section "SolveTransition_IYP".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 258 in user-defined function section "SolveTransition_IYP".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 297 in user-defined function section "SolveTransition_IYP".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 56 in user-defined function section "BatchSolve".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 63 in user-defined function section "BatchSolve".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 65 in user-defined function section "BatchSolve".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 71 in user-defined function section "BatchSolve".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 78 in user-defined function section "IntraYearPrices".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 91 in user-defined function section "IntraYearPrices".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 117 in user-defined function section "IntraYearPrices".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+The maximum of 20 warnings reached, further warnings suppressed.  See also option maximal_number_of_warnings_reported
+Warning at line 138 in user-defined function section "IntraYearPrices".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 152 in user-defined function section "IntraYearPrices".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+Warning at line 191 in user-defined function section "IntraYearPrices".
+Implicit cast from a set expression to a string is deprecated and will result in a compile error in a future AIMMS version. Please use "SetAsString" intrinsic function instead. See AIMMS Function Reference for more information.
+A DataChangeMonitor with ID DataChangeMonitor001 does not exist.
+ReadList : Cell F27 in Types: Remaining rows are ignored after empty header cell.
+ReadList : Cell H5 in Types: Remaining rows are ignored after empty header cell.
+ReadList : Cell H5 in Types: Remaining rows are ignored after empty header cell.
+ReadList : Cell K21 in Types: Remaining rows are ignored after empty header cell.
+ReadList : Cell A127 in Activities: Remaining rows are ignored after empty header cell.
+ReadList : Cell A127 in Activities: Remaining rows are ignored after empty header cell.
+ReadList : Cell A127 in Activities: Remaining rows are ignored after empty header cell.
+ReadList : Cell A127 in Activities: Remaining rows are ignored after empty header cell.
+Warning at line 196 in user-defined function section "DataReading".
+The element parameter "nodePer_act" is not initialized (default values are used).
+ReadList : Cell A127 in Activities: Remaining rows are ignored after empty header cell.
+ReadList : Cell A127 in Activities: Remaining rows are ignored after empty header cell.
+Warning at line 1 in the definition of set "activities_solve".
+The parameter "groupOf_activities" is not initialized (default values are used).
+ReadList : Cell A127 in Activities: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A127 in Activities: Remaining rows are ignored after empty header cell.
+ReadTable : Cell FD3 in HourlyProfiles: Remaining columns are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+Warning at line 570 in user-defined function section "DataReading".
+The parameter "emission_capacity" is not initialized (default values are used).
+ReadTable : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+Warning at line 577 in user-defined function section "DataReading".
+The parameter "firmcap_share" is not initialized (default values are used).
+ReadList : Cell A901 in Technologies: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A901 in EnergyBalance: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadTable : Cell A6 in Infrastructure: Remaining rows are ignored after empty header cell.
+ReadList : Cell A4 in ActGrouping: Remaining rows are ignored after empty header cell.
+ReadList : Cell A4 in ActGrouping: Remaining rows are ignored after empty header cell.
+ReadList : Cell A4 in ActGrouping: Remaining rows are ignored after empty header cell.
+ReadList : Cell A4 in ActGrouping: Remaining rows are ignored after empty header cell.
+ReadList : Cell A4 in ActGrouping: Remaining rows are ignored after empty header cell.
+ReadTable : Cell H4 in ActGrouping: Remaining rows are ignored after empty header cell.
+ReadTable : Cell C25 in EffLearning: Remaining rows are ignored after empty header cell.
+ReadList : Cell C4 in Feedstocks: Remaining rows are ignored after empty header cell.
+Warning at line 807 in user-defined function section "DataReading".
+The parameter "retrofit_relations" is not initialized (default values are used).
+ReadList : Cell A116 in Retrofitting: Remaining rows are ignored after empty header cell.
+Warning at line 1 in the definition of set "periods_nonzeros".
+The parameter "Ptech_use" is not initialized (default values are used).
+Warning at line 46 in user-defined function section "SolveTransition".
+The columns "deltaQ_DW(8742,Emi04_01,2050)" and "deltaQ_DW(8750,Emi04_01,2050)" are equal in the generated mathematical program "LeastCostPlanning". This may lead to non-unique solutions.  For more information regarding potential causes and consequences, see the help associated with the option "Warning_duplicate_column".
+Warning at line 46 in user-defined function section "SolveTransition".
+The columns "deltaQ_DW(8737,Emi04_01,2050)" and "deltaQ_DW(8750,Emi04_01,2050)" are equal in the generated mathematical program "LeastCostPlanning". This may lead to non-unique solutions.  For more information regarding potential causes and consequences, see the help associated with the option "Warning_duplicate_column".
+Warning at line 46 in user-defined function section "SolveTransition".
+The columns "deltaQ_DW(8737,Emi04_01,2050)" and "deltaQ_DW(8738,Emi04_01,2050)" are equal in the generated mathematical program "LeastCostPlanning". This may lead to non-unique solutions.  For more information regarding potential causes and consequences, see the help associated with the option "Warning_duplicate_column".
+Warning at line 46 in user-defined function section "SolveTransition".
+Only 3 out of 1040980 duplicate column warnings were reported.  See also option limit_reported_duplicate_column_row_warnings.
+Warning at line 1 in the definition of set "international_transport".
+The element 'CO2 Air Int. Transport' is not in the set "activities_solve", see also the option warning_explicit_element_not_in_set.
+Warning at line 1 in the definition of set "international_transport".
+The element 'CO2 Air Int. Transport' is not in the set "activities_solve", see also the option warning_explicit_element_not_in_set.
