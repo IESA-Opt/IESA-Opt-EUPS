@@ -533,7 +533,10 @@ Model IESA_Opt_Package {
 				IndexDomain: as;
 				Range: energy_labels;
 			}
-			Parameter emission_capacity {
+			Parameter indir_emission_capacity {
+				IndexDomain: (t,p);
+			}
+			Parameter indir_emission_operation {
 				IndexDomain: (t,p);
 			}
 			Parameter firmcap_share {
@@ -616,8 +619,9 @@ Model IESA_Opt_Package {
 				Property: ShadowPrice;
 				Definition: {
 					!The sum of the use of all the emissions released to air in each node
-					sum[tb, tech_use(tb,ps)*(nodePer_act(activityPer_tech(tb))=n)*(activityPer_tech(tb) in activities_target)]
-					+ sum[t, techStock(t,ps)*emission_capacity(t,ps)]
+					sum[t, tech_use(t,ps)*(nodePer_act(activityPer_tech(t))=n)*(activityPer_tech(t) in activities_target)]
+					+ sum[t, techStock(t,ps)*indir_emission_capacity(t,ps)]
+					+ sum[t, tech_use(t,ps)*indir_emission_operation(t,ps)]
 					!The forced constraint
 					<=emissionTarget(n,ps)
 				}
@@ -2178,6 +2182,27 @@ Model IESA_Opt_Package {
 				endif;
 				
 				!Apply desired settings for the each solver
+				! For Gurobi 12.0
+					option 'GUROBI 12.0'.Method := 'Barrier';
+					option 'GUROBI 12.0'.Barrier_crossover := 'Off';
+					option 'GUROBI 12.0'.Thread_limit := CPUCores;
+					option 'GUROBI 12.0'.Barrier_convergence_tolerance := BarrierConvergence_tolerance;
+					option 'GUROBI 12.0'.Barrier_homogeneous_algorithm := 'Automatic'; !'On'
+					option 'GUROBI 12.0'.presolve := 'Automatic'; !'Off'
+					option 'GUROBI 12.0'.scale := 'Automatic'; !'No'
+					option 'GUROBI 12.0'.presolve_dual := 'Off';
+					option 'GUROBI 12.0'.feasibility := Feasibility_tolerance;
+					option 'GUROBI 12.0'.optimality := Optimality_tolerance;
+					if (crossover_enabling = 'yes') then
+						option 'GUROBI 12.0'.Barrier_crossover := 'Automatic';
+				!		option 'GUROBI 12.0'.presolve_dual := 'Presolve primal and dual';
+						if (RobustValue = 'yes') then
+							option 'GUROBI 12.0'.Barrier_crossover_basis := 'Robust';
+						elseif (RobustValue = 'no') then
+							option 'GUROBI 12.0'.Barrier_crossover_basis := 'Fast';
+						endif;	
+					endif;
+				
 				! For Gurobi 9.5
 					option 'GUROBI 9.5'.Method := 'Barrier';
 					option 'GUROBI 9.5'.Barrier_crossover := 'Off';
@@ -3172,15 +3197,27 @@ Model IESA_Opt_Package {
 			}
 			Parameter emissions_sec {
 				IndexDomain: (nn,z,ac,p);
-				Definition: sum[tb, (namePer_node(nodePer_techBal(tb))=nn)*(tech_sector(tb)=z)*Ptech_useNet(tb,p)*activity_balances(tb,ac,p)*IEM_node(nodePer_techBal(tb))];
+				Definition: sum[tb, (namePer_node(nodePer_techBal(tb))=nn)*(tech_sector(tb)=z)*Ptech_useNet(tb,p)* -1 *activity_balances(tb,ac,p)*IEM_node(nodePer_techBal(tb))];
 			}
 			Parameter emissions_act {
 				IndexDomain: (nn,z,as,ac,p);
-				Definition: sum[tb, (namePer_node(nodePer_techBal(tb))=nn)*(tech_sector(tb)=z)*(activityPer_tech(tb)=as)*Ptech_useNet(tb,p)*activity_balances(tb,ac,p)*IEM_node(nodePer_techBal(tb))];
+				Definition: sum[tb, (namePer_node(nodePer_techBal(tb))=nn)*(tech_sector(tb)=z)*(activityPer_tech(tb)=as)*Ptech_useNet(tb,p)* -1 * activity_balances(tb,ac,p)*IEM_node(nodePer_techBal(tb))];
 			}
 			Parameter emissions_tech {
 				IndexDomain: (nn,z,as,tb,ac,p);
-				Definition: (namePer_node(nodePer_techBal(tb))=nn)*(tech_sector(tb)=z)*(activityPer_tech(tb)=as)*Ptech_useNet(tb,p)*activity_balances(tb,ac,p)*IEM_node(nodePer_techBal(tb));
+				Definition: (namePer_node(nodePer_techBal(tb))=nn)*(tech_sector(tb)=z)*(activityPer_tech(tb)=as)*Ptech_useNet(tb,p)* -1 *activity_balances(tb,ac,p)*IEM_node(nodePer_techBal(tb));
+			}
+			Parameter emissions_tech_capacity {
+				IndexDomain: (nn,z,as,t,ac,p);
+				Definition: (namePer_node(nodePer_techBal(t))=nn)*(tech_sector(t)=z)*(activityPer_tech(t)=as)*PtechStock(t,p)*indir_emission_capacity(t,p)*IEM_node(nodePer_techBal(t));
+			}
+			Parameter emissions_tech_operation {
+				IndexDomain: (nn,z,as,t,ac,p);
+				Definition: (namePer_node(nodePer_techBal(t))=nn)*(tech_sector(t)=z)*(activityPer_tech(t)=as)*Ptech_useNet(t,p)*indir_emission_operation(t,p)*IEM_node(nodePer_techBal(t));
+			}
+			Parameter emissions_tech_all {
+				IndexDomain: (nn,z,as,t,ac,p);
+				Definition: emissions_tech(nn,z,as,t,ac,p) + emissions_tech_capacity(nn,z,as,t,ac,p) + emissions_tech_operation(nn,z,as,t,ac,p);
 			}
 		}
 		DeclarationSection Balances {
@@ -3601,7 +3638,7 @@ Model IESA_Opt_Package {
 						sum[jtos, sankey_flows(nn,'Final','Hydrogen',jtos,p)+sankey_flows(nn,'Conversion','Hydrogen',jtos,p)]
 					elseif (tok='RES share in primary') then
 						100*
-						sum[el, (el in renewables)*primaryBalance(nn,'Net',el,p)]/sum[el, primaryBalance(nn,'Net',el,p)+1e-6 | primaryBalance(nn,'Net',el,p)>=0]
+						sum[el, (el in renewables)*primaryBalance(nn,'Net',el,p)]/sum[el, primaryBalance(nn,'Net',el,p)+1e-6 $ primaryBalance(nn,'Net',el,p)>=0]
 					elseif (tok='RES share in final electricity') then
 						100*
 						sum[(n,tb,as), (namePer_node(n)=nn)*IEM_node(n)*(nodePer_techBal(tb)=n)*(labelPer_act(as)='Electricity')
@@ -3870,6 +3907,22 @@ Model IESA_Opt_Package {
 				IndexDomain: (nn,z,ac,pnz);
 				InitialData: 0;
 			}
+			Parameter Remissions_tech {
+				IndexDomain: (nn,z,as,tb,ac,pnz);
+				InitialData: 0;
+			}
+			Parameter Remissions_tech_capacity {
+				IndexDomain: (nn,z,as,t,ac,pnz);
+				InitialData: 0;
+			}
+			Parameter Remissions_tech_operation {
+				IndexDomain: (nn,z,as,t,ac,pnz);
+				InitialData: 0;
+			}
+			Parameter Remissions_tech_all {
+				IndexDomain: (nn,z,as,t,ac,pnz);
+				InitialData: 0;
+			}
 			Parameter RsupdemAct_tech {
 				IndexDomain: (nn,as,tob,tb,pnz);
 				InitialData: 0;
@@ -4007,10 +4060,6 @@ Model IESA_Opt_Package {
 			}
 			Parameter RenergyUse_act {
 				IndexDomain: (nn,z,as,ae,pnz);
-				InitialData: 0;
-			}
-			Parameter Remissions_tech {
-				IndexDomain: (nn,z,as,tb,ac,pnz);
 				InitialData: 0;
 			}
 			Parameter RLCOP_secE {
@@ -4225,6 +4274,10 @@ Model IESA_Opt_Package {
 				RXC_use(inn,nn,tb,pnz) := XC_use(inn,nn,tb,pnz);
 				Remissions_all(nn,t_c,pnz) := emissions_all(nn,t_c,pnz);
 				Remissions_sec(nn,z,ac,pnz) := emissions_sec(nn,z,ac,pnz);
+				Remissions_tech(nn,z,as,tb,ac,pnz) := emissions_tech(nn,z,as,tb,ac,pnz);
+				Remissions_tech_capacity(nn,z,as,t,ac,pnz) := emissions_tech_capacity(nn,z,as,t,ac,pnz);
+				Remissions_tech_operation(nn,z,as,t,ac,pnz) := emissions_tech_operation(nn,z,as,t,ac,pnz);
+				Remissions_tech_all(nn,z,as,t,ac,pnz) := emissions_tech_all(nn,z,as,t,ac,pnz);
 				RsupdemAct_tech(nn,as,tob,tb,pnz) := supdemAct_tech(nn,as,tob,tb,pnz);
 				RfinalEnergy_matrix(nn,z,tof,el,pnz) := finalEnergy_matrix(nn,z,tof,el,pnz);
 				RfinalEnergy_act(nn,z,as,pnz) := finalEnergy_act(nn,z,as,pnz);
@@ -4250,7 +4303,6 @@ Model IESA_Opt_Package {
 				RfinalEnergy_matrixAct(nn,z,as,tof,el,pnz) := finalEnergy_matrixAct(nn,z,as,tof,el,pnz);
 				Rflexibility_volumesTech(nn,tb,tox,pnz) := flexibility_volumesTech(nn,tb,tox,pnz);
 				RenergyUse_act(nn,z,as,ae,pnz) := energyUse_act(nn,z,as,ae,pnz);
-				Remissions_tech(nn,z,as,tb,ac,pnz) := emissions_tech(nn,z,as,tb,ac,pnz);
 				RLCOP_secE(nn,z,tots,toc,pnz) := LCOP_secE(nn,z,tots,toc,pnz);
 				RLCOP_act(nn,z,as,tots,toc,pnz) := LCOP_act(nn,z,as,tots,toc,pnz);
 				RShare_techmax(tb,pnz,nn) := Share_techmax(tb,pnz,nn);
@@ -4336,8 +4388,11 @@ Model IESA_Opt_Package {
 				RPower_gen(nn,tb,pnz) := round(RPower_gen(nn,tb,pnz),2);
 				RXC_stock(inn,nn,tb,pnz) := round(RXC_stock(inn,nn,tb,pnz),2);
 				RXC_use(inn,nn,tb,pnz) := round(RXC_use(inn,nn,tb,pnz),2);
-				Remissions_all(nn,t_c,pnz) := round(Remissions_all(nn,t_c,pnz),2);
-				Remissions_sec(nn,z,ac,pnz) := round(Remissions_sec(nn,z,ac,pnz),2);
+				Remissions_all(nn,t_c,pnz) := round(Remissions_all(nn,t_c,pnz),4);
+				Remissions_sec(nn,z,ac,pnz) := round(Remissions_sec(nn,z,ac,pnz),4);
+				Remissions_tech_capacity(nn,z,as,t,ac,pnz) := round(Remissions_tech_capacity(nn,z,as,t,ac,pnz),4);
+				Remissions_tech_operation(nn,z,as,t,ac,pnz) := round(Remissions_tech_operation(nn,z,as,t,ac,pnz),4);
+				Remissions_tech_all(nn,z,as,t,ac,pnz) := round(Remissions_tech_all(nn,z,as,t,ac,pnz),4);
 				RsupdemAct_tech(nn,as,tob,tb,pnz) := round(RsupdemAct_tech(nn,as,tob,tb,pnz),2);
 				RfinalEnergy_matrix(nn,z,tof,el,pnz) := round(RfinalEnergy_matrix(nn,z,tof,el,pnz),2);
 				RfinalEnergy_act(nn,z,as,pnz) := round(RfinalEnergy_act(nn,z,as,pnz),2);
@@ -5258,16 +5313,23 @@ Model IESA_Opt_Package {
 					       MergeWithExistingData	:  0);
 					
 					axll::ReadTable(
-					       IdentifierReference 	:  emission_capacity,
+					       IdentifierReference 	:  indir_emission_capacity,
 					       RowHeaderRange      	:  "A7:A5001",
 					       ColumnHeaderRange      	:  "DA4:DG4",
 					       DataRange           	:  "DA7:DG5001",
 					       MergeWithExistingData	:  0);
 					
+					axll::ReadTable(
+					       IdentifierReference 	:  indir_emission_operation,
+					       RowHeaderRange      	:  "A7:A5001",
+					       ColumnHeaderRange      	:  "DH4:DN4",
+					       DataRange           	:  "DH7:DN5001",
+					       MergeWithExistingData	:  0);
+					
 					axll::ReadList(
 					       IdentifierReference 	:  firmcap_share,
 					       RowHeaderRange      	:  "A7:A5001",
-					       DataRange        	:  "DH7:DH5001",
+					       DataRange        	:  "DO7:DO5001",
 					       MergeWithExistingData	:  0);
 					!Select the workbook sheet
 					axll::SelectSheet("EnergyBalance");
@@ -5602,6 +5664,9 @@ Model IESA_Opt_Package {
 						axll::CreateSheet(SheetName:"Sectoral_Emissions");
 						axll::CreateSheet(SheetName:"Activity_Emissions");
 						axll::CreateSheet(SheetName:"Technology_Emissions");
+						axll::CreateSheet(SheetName:"Technology_Emissions_capacity");
+						axll::CreateSheet(SheetName:"Technology_Emissions_operation");
+						axll::CreateSheet(SheetName:"Technology_Emissions_all");
 						axll::CreateSheet(SheetName:"Power_Stock");
 						axll::CreateSheet(SheetName:"Share_techmax");
 						axll::CreateSheet(SheetName:"Power_Gen");
@@ -6263,6 +6328,117 @@ Model IESA_Opt_Package {
 					axll::ClearActiveSheet;	
 					axll::WriteTable(
 					  IdentifierReference : Remissions_tech(nn,z,as,tb,ac,pnz),
+					  RowHeaderRange : "A2:E5000",
+					  ColumnHeaderRange : "F1:ZZ1",
+					  DataRange : "F2:ZZ5000",
+					  allowRangeOverflow : 1,
+					  writeZeros : 1,
+					);
+					!Write the parameter: Node
+					axll:: WriteSingleValue(
+						ScalarReference 	:  node_string,
+						Cell           		:  "A1"
+					);
+					!Write the parameter: Sector
+					axll:: WriteSingleValue(
+						ScalarReference 	:  sector_string,
+						Cell           		:  "B1"
+					);
+					!Write the parameter: Actvity
+					axll:: WriteSingleValue(
+						ScalarReference 	:  act_string,
+						Cell           		:  "C1"
+					);
+					!Write the parameter: Technology
+					axll:: WriteSingleValue(
+						ScalarReference 	:  techID_string,
+						Cell           		:  "D1"
+					);
+					!Write the parameter: Type
+					axll:: WriteSingleValue(
+						ScalarReference 	:  type_string,
+						Cell           		:  "E1"
+					);
+					
+					!Write the table: Technology emissions capacity (node name, sector, activity,, technology, activity, period)======================================================================
+					axll::SelectSheet("Technology_Emissions_capacity");
+					axll::ClearActiveSheet;	
+					axll::WriteTable(
+					  IdentifierReference : Remissions_tech_capacity(nn,z,as,t,ac,pnz),
+					  RowHeaderRange : "A2:E5000",
+					  ColumnHeaderRange : "F1:ZZ1",
+					  DataRange : "F2:ZZ5000",
+					  allowRangeOverflow : 1,
+					  writeZeros : 1,
+					);
+					!Write the parameter: Node
+					axll:: WriteSingleValue(
+						ScalarReference 	:  node_string,
+						Cell           		:  "A1"
+					);
+					!Write the parameter: Sector
+					axll:: WriteSingleValue(
+						ScalarReference 	:  sector_string,
+						Cell           		:  "B1"
+					);
+					!Write the parameter: Actvity
+					axll:: WriteSingleValue(
+						ScalarReference 	:  act_string,
+						Cell           		:  "C1"
+					);
+					!Write the parameter: Technology
+					axll:: WriteSingleValue(
+						ScalarReference 	:  techID_string,
+						Cell           		:  "D1"
+					);
+					!Write the parameter: Type
+					axll:: WriteSingleValue(
+						ScalarReference 	:  type_string,
+						Cell           		:  "E1"
+					);
+					
+					!Write the table: Technology emissions capacity (node name, sector, activity,, technology, activity, period)======================================================================
+					axll::SelectSheet("Technology_Emissions_operation");
+					axll::ClearActiveSheet;	
+					axll::WriteTable(
+					  IdentifierReference : Remissions_tech_operation(nn,z,as,t,ac,pnz),
+					  RowHeaderRange : "A2:E5000",
+					  ColumnHeaderRange : "F1:ZZ1",
+					  DataRange : "F2:ZZ5000",
+					  allowRangeOverflow : 1,
+					  writeZeros : 1,
+					);
+					!Write the parameter: Node
+					axll:: WriteSingleValue(
+						ScalarReference 	:  node_string,
+						Cell           		:  "A1"
+					);
+					!Write the parameter: Sector
+					axll:: WriteSingleValue(
+						ScalarReference 	:  sector_string,
+						Cell           		:  "B1"
+					);
+					!Write the parameter: Actvity
+					axll:: WriteSingleValue(
+						ScalarReference 	:  act_string,
+						Cell           		:  "C1"
+					);
+					!Write the parameter: Technology
+					axll:: WriteSingleValue(
+						ScalarReference 	:  techID_string,
+						Cell           		:  "D1"
+					);
+					!Write the parameter: Type
+					axll:: WriteSingleValue(
+						ScalarReference 	:  type_string,
+						Cell           		:  "E1"
+					);
+					
+					!Write the table: Technology emissions capacity (node name, sector, activity,, technology, activity, period)======================================================================
+					axll::SelectSheet("Technology_Emissions_all");
+					axll::ClearActiveSheet;	
+					axll::WriteTable(
+					  IdentifierReference : Remissions_tech_all(nn,z,as,t,ac,pnz),
 					  RowHeaderRange : "A2:E5000",
 					  ColumnHeaderRange : "F1:ZZ1",
 					  DataRange : "F2:ZZ5000",
@@ -7501,27 +7677,27 @@ Model IESA_Opt_Package {
 			! Creating stopwatch for the generation time
 			ReferenceTime_Generation := CurrentToString("%c%y-%m-%d %H:%M:%S");
 			
-			StatusMessage("ST... Generating the transition GMP for periods: " + periods_solve);
+			StatusMessage("ST... Generating the transition GMP for periods: " + SetAsString(periods_solve));
 			! Create a solver session for GenMathProgram, which will create an element in the set AllSolverSessions, and assign the newly created element to the element parameter session.
 			GMP_planning := GMP::Instance::Generate(LeastCostPlanning);
 			if not GMP_planning then raise warning "Could not generate the GMP!"; AIMMSWav(Failed); return; endif;
 			
 			MathProgramParameters('Generation Time',run_numberState) := round(CurrentToMoment([minute],ReferenceTime_Generation),1);
 			
-			StatusMessage("ST... Presolving the transition GMP for periods: " + periods_solve );
-			! Create a linear presolved GMP
-			presGMP_planning := GMP::Instance::CreatePresolved(GMP_planning,"Transition"+periods_solve);
-			if not presGMP_planning then raise warning "Could not presolve the GMP!"; endif;
+			!StatusMessage("ST... Presolving the transition GMP for periods: " + SetAsString(periods_solve) );
+			!! Create a linear presolved GMP
+			!presGMP_planning := GMP::Instance::CreatePresolved(GMP_planning,"Transition"+SetAsString(periods_solve));
+			!if not presGMP_planning then raise warning "Could not presolve the GMP!"; endif;
 			
 			!Set solver
-			GMP::Instance::SetSolver(presGMP_planning,SolverChoiceTransition);
+			GMP::Instance::SetSolver(GMP_planning,SolverChoiceTransition);
 			
-			StatusMessage("ST... Solving the transition GMP for periods: " + periods_solve );
+			StatusMessage("ST... Solving the transition GMP for periods: " + SetAsString(periods_solve) );
 			! Solve the presolved GMP
-			GMP::Instance::Solve(presGMP_planning ) ;
+			GMP::Instance::Solve(GMP_planning ) ;
 			
 			! Get Progress window parameters for reporting purposes
-			GMP_details(run_numberState,presGMP_planning,ReferenceTime);
+			GMP_details(run_numberState,GMP_planning,ReferenceTime);
 			
 			StatusMessage("ST... Solving the transition GMP is Finished!");
 			!============================================================= End of the Solve procedure =============================================================
@@ -7551,7 +7727,7 @@ Model IESA_Opt_Package {
 			StechStock(t,pss):=techStock(t,pss);
 			Ptotal_costs:=totalCosts_planning;
 			
-			if GMP::Solution::GetProgramStatus(presGMP_planning,1) = 'Optimal' then
+			if GMP::Solution::GetProgramStatus(GMP_planning,1) = 'Optimal' then
 				!Extract the prices
 				!First extract the shadow prices for all the periods, then divide for the years of solution (where the weight is different than zero)
 				yearly_prices(as,p):=balance_activities(as,p).ShadowPrice;
@@ -7607,7 +7783,7 @@ Model IESA_Opt_Package {
 			
 				StatusMessage("Solve transition is successfully finished!" );
 			
-			elseif GMP::Solution::GetProgramStatus(presGMP_planning,1) = 'Intermediate non-optimal' then
+			elseif GMP::Solution::GetProgramStatus(GMP_planning,1) = 'Intermediate non-optimal' then
 				!Extract the prices
 				!First extract the shadow prices for all the periods, then divide for the years of solution (where the weight is different than zero)
 				yearly_prices(as,p):=balance_activities(as,p).ShadowPrice;
@@ -7716,22 +7892,22 @@ Model IESA_Opt_Package {
 			! Creating stopwatch for the generation time
 			ReferenceTime_Generation := CurrentToString("%c%y-%m-%d %H:%M:%S");
 			
-			StatusMessage("T+IYP... Generating the transition GMP for periods: " + periods_solve);
+			StatusMessage("T+IYP... Generating the transition GMP for periods: " + SetAsString(periods_solve));
 			! Create a solver session for GenMathProgram, which will create an element in the set AllSolverSessions, and assign the newly created element to the element parameter session.
 			GMP_planning := GMP::Instance::Generate(LeastCostPlanning);
 			if not GMP_planning then raise warning "Could not generate the GMP!"; AIMMSWav(Failed); return; endif;
 			
 			MathProgramParameters('Generation Time',run_numberState) := round(CurrentToMoment([minute],ReferenceTime_Generation),1);
 			
-			StatusMessage("T+IYP... Presolving the transition GMP for periods: " + periods_solve );
+			StatusMessage("T+IYP... Presolving the transition GMP for periods: " + SetAsString(periods_solve) );
 			! Create a linear presolved GMP
-			presGMP_planning := GMP::Instance::CreatePresolved(GMP_planning,"Transition"+periods_solve);
+			presGMP_planning := GMP::Instance::CreatePresolved(GMP_planning,"Transition"+SetAsString(periods_solve));
 			if not presGMP_planning then raise warning "Could not presolve the GMP!"; endif;
 			
 			!Set solver
 			GMP::Instance::SetSolver(presGMP_planning,SolverChoiceTransition);
 			
-			StatusMessage("T+IYP... Solving the transition GMP for periods: " + periods_solve );
+			StatusMessage("T+IYP... Solving the transition GMP for periods: " + SetAsString(periods_solve) );
 			! Solve the presolved GMP
 			GMP::Instance::Solve(presGMP_planning ) ;
 			
@@ -7857,7 +8033,7 @@ Model IESA_Opt_Package {
 				! Creating stopwatch for the generation time
 				ReferenceTime_Generation := CurrentToString("%c%y-%m-%d %H:%M:%S");
 			
-				StatusMessage("T+IYP... Generating GMP for period: " + ipss + " of " + periods_selection);
+				StatusMessage("T+IYP... Generating GMP for period: " + ipss + " of " + SetAsString(periods_selection));
 			
 				!Apply the desired intra-year method
 				if (IntrayearValue='Pstock') then
@@ -7870,7 +8046,7 @@ Model IESA_Opt_Package {
 					if not AY_GMP(ipss) then raise warning "Could not generate the GMP for period "+ipss; AIMMSWav(Failed); return; endif;
 				endif;
 			
-				StatusMessage("T+IYP... Presolving GMP for period: " + ipss + " of " + periods_selection);
+				StatusMessage("T+IYP... Presolving GMP for period: " + ipss + " of " + SetAsString(periods_selection));
 				pres_AY_GMP(ipss) := GMP::Instance::CreatePresolved(AY_GMP(ipss), "pres_GMP_" + ipss);
 				if not pres_AY_GMP(ipss) then raise warning "Could not presolve the GMP for period "+ipss; AIMMSWav(Failed); return; endif;
 				GMP::Instance::SetSolver(pres_AY_GMP(ipss),SolverChoiceIYP);
@@ -7895,7 +8071,7 @@ Model IESA_Opt_Package {
 				endif;
 			
 				GMP::Solution::SendToSolverSession(AY_SolverSession(ipss),1);
-				StatusMessage("T+IYP... AsynchronousExecute period: " + ipss + " of " + periods_selection);
+				StatusMessage("T+IYP... AsynchronousExecute period: " + ipss + " of " + SetAsString(periods_selection));
 				GMP::SolverSession::AsynchronousExecute(AY_SolverSession(ipss));
 			
 				run_numberState:= run_numberState + 1;
@@ -7908,7 +8084,7 @@ Model IESA_Opt_Package {
 			run_numberState:= 2;
 			
 			while card(AllsolverSessions) do
-			 	FinishedSS := GMP::SolverSession::WaitForSingleCompletion(solSesSet : AllSolverSessions);
+			 	FinishedSS := GMP::SolverSession::WaitForSingleCompletion(AllSolverSessionCompletionObjects);
 			 	for (ipss in periods_selection) do
 			 		if StringOccurrences(FinishedSS,ipss)>0 then
 			 			StatusMessage("T+IYP... Retrieveing solution for period " + ipss);
@@ -7916,7 +8092,7 @@ Model IESA_Opt_Package {
 						GMP::Solution::RetrieveFromSolverSession(AY_SolverSession(ipss), 1);
 						if pres_AY_GMP(ipss) then
 							if (GMP::Solution::GetProgramStatus(pres_AY_GMP(ipss),1) <> 'Optimal') then
-								raise warning " ===== Could not find Optimal solution for GMP of period " + ipss +" of " + periods_selection;
+								raise warning " ===== Could not find Optimal solution for GMP of period " + ipss +" of " + SetAsString(periods_selection);
 								! Get Progress window parameters for reporting purposes
 								GMP_details(run_numberState,pres_AY_GMP(ipss),ReferenceTime_IYP);
 								periods_selection := periods_selection - ipss;
@@ -7930,7 +8106,7 @@ Model IESA_Opt_Package {
 							run_numberState:=run_numberState+1;
 						elseif AY_GMP(ipss) then
 							if (GMP::Solution::GetProgramStatus(AY_GMP(ipss),1) <> 'Optimal') then
-								raise warning " ===== Could not find Optimal solution for GMP of period " + ipss +" of " + periods_selection;
+								raise warning " ===== Could not find Optimal solution for GMP of period " + ipss +" of " + SetAsString(periods_selection);
 								! Get Progress window parameters for reporting purposes
 								GMP_details(run_numberState,AY_GMP(ipss),ReferenceTime_IYP);
 								periods_selection := periods_selection - ipss;
@@ -7969,7 +8145,7 @@ Model IESA_Opt_Package {
 			    			if AY_GMP(ipss) then GMP::Instance::Delete(AY_GMP(ipss)); endif;
 			    			periods_selection := periods_selection - ipss;
 			 		endif;
-			 		StatusMessage("T+IYP... Periods " + periods_selection + "  are not solved yet!");
+			 		StatusMessage("T+IYP... Periods " + SetAsString(periods_selection) + "  are not solved yet!");
 			 	endfor;
 			    	if card(periods_selection) = 0 then BREAK; endif;
 			endwhile ;
@@ -8080,22 +8256,22 @@ Model IESA_Opt_Package {
 				! Creating stopwatch for the generation time
 				ReferenceTime_Generation := CurrentToString("%c%y-%m-%d %H:%M:%S");
 			
-				StatusMessage(BS_counter + "/" + BS_length + "  | Generating the transition GMP for periods: " + periods_solve + ' | ' + ifs);
+				StatusMessage(BS_counter + "/" + BS_length + "  | Generating the transition GMP for periods: " + SetAsString(periods_solve) + ' | ' + ifs);
 				! Create a solver session for GenMathProgram, which will create an element in the set AllSolverSessions, and assign the newly created element to the element parameter session.
 				GMP_planning := GMP::Instance::Generate(LeastCostPlanning);
 				if not GMP_planning then raise warning "Could not generate the GMP " + FindReplaceStrings(ifs,"data\\",""); AIMMSWav(Failed); SKIP; endif;
 			
 				MathProgramParameters('Generation Time',run_numberState) := round(CurrentToMoment([minute],ReferenceTime_Generation),1);
 			
-				StatusMessage(BS_counter + "/" + BS_length + " Presolving the transition GMP for periods: " + periods_solve + ' | ' + ifs);
+				StatusMessage(BS_counter + "/" + BS_length + " Presolving the transition GMP for periods: " + SetAsString(periods_solve) + ' | ' + ifs);
 				! Create a linear presolved GMP
-				presGMP_planning := GMP::Instance::CreatePresolved(GMP_planning,BS_counter+"/"+BS_length+"_BatchSolve"+periods_solve);
+				presGMP_planning := GMP::Instance::CreatePresolved(GMP_planning,BS_counter+"/"+BS_length+"_BatchSolve"+SetAsString(periods_solve));
 				if not presGMP_planning then raise warning "Could not presolve the GMP " + FindReplaceStrings(ifs,"data\\",""); endif;
 			
 				!Set solver
 				GMP::Instance::SetSolver(presGMP_planning,SolverChoiceTransition);
 			
-				StatusMessage(BS_counter + "/" + BS_length + " Solving the transition GMP for periods: " + periods_solve + ' | ' + ifs);
+				StatusMessage(BS_counter + "/" + BS_length + " Solving the transition GMP for periods: " + SetAsString(periods_solve) + ' | ' + ifs);
 				! Solve the presolved GMP
 				GMP::Instance::Solve(presGMP_planning ) ;
 			
@@ -8283,7 +8459,7 @@ Model IESA_Opt_Package {
 				! Creating stopwatch for the generation time
 				ReferenceTime_Generation := CurrentToString("%c%y-%m-%d %H:%M:%S");
 			
-				StatusMessage("IYP... Generating GMP for period: " + ipss + " of " + periods_selection);
+				StatusMessage("IYP... Generating GMP for period: " + ipss + " of " + SetAsString(periods_selection));
 			
 				!Apply the desired intra-year method
 				if (IntrayearValue='Pstock') then
@@ -8296,7 +8472,7 @@ Model IESA_Opt_Package {
 					if not AY_GMP(ipss) then raise warning "Could not generate the GMP for period "+ipss; AIMMSWav(Failed); return; endif;
 				endif;
 			
-				StatusMessage("IYP... Presolving GMP for period: " + ipss + " of " + periods_selection);
+				StatusMessage("IYP... Presolving GMP for period: " + ipss + " of " + SetAsString(periods_selection));
 				pres_AY_GMP(ipss) := GMP::Instance::CreatePresolved(AY_GMP(ipss), "pres_GMP_" + ipss);
 				if not pres_AY_GMP(ipss) then raise warning "Could not presolve the GMP for period "+ipss; AIMMSWav(Failed); return; endif;
 				GMP::Instance::SetSolver(pres_AY_GMP(ipss),SolverChoiceIYP);
@@ -8322,7 +8498,7 @@ Model IESA_Opt_Package {
 			
 				GMP::Solution::SendToSolverSession(AY_SolverSession(ipss),1);
 			
-				StatusMessage("IYP... AsynchronousExecute period: " + ipss + " of " + periods_selection);
+				StatusMessage("IYP... AsynchronousExecute period: " + ipss + " of " + SetAsString(periods_selection));
 				GMP::SolverSession::AsynchronousExecute(AY_SolverSession(ipss));
 			
 				run_numberState:= run_numberState + 1;
@@ -8335,7 +8511,7 @@ Model IESA_Opt_Package {
 			run_numberState:= 2;
 			
 			while card(AllsolverSessions) do
-			 	FinishedSS := GMP::SolverSession::WaitForSingleCompletion(solSesSet : AllSolverSessions);
+			 	FinishedSS := GMP::SolverSession::WaitForSingleCompletion(AllSolverSessionCompletionObjects);
 			 	for (ipss in periods_selection) do
 			 		if StringOccurrences(FinishedSS,ipss)>0 then
 			 			StatusMessage("IYP... Retrieveing solution for period " + ipss);
@@ -8343,7 +8519,7 @@ Model IESA_Opt_Package {
 						GMP::Solution::RetrieveFromSolverSession(AY_SolverSession(ipss), 1);
 						if pres_AY_GMP(ipss) then
 							if (GMP::Solution::GetProgramStatus(pres_AY_GMP(ipss),1) <> 'Optimal') then
-								raise warning " ===== Could not find Optimal solution for GMP of period " + ipss +" of " + periods_selection;
+								raise warning " ===== Could not find Optimal solution for GMP of period " + ipss +" of " + SetAsString(periods_selection);
 								! Get Progress window parameters for reporting purposes
 								GMP_details(run_numberState,pres_AY_GMP(ipss),ReferenceTime_IYP);
 								periods_selection := periods_selection - ipss;
@@ -8357,7 +8533,7 @@ Model IESA_Opt_Package {
 							run_numberState:=run_numberState+1;
 						elseif AY_GMP(ipss) then
 							if (GMP::Solution::GetProgramStatus(AY_GMP(ipss),1) <> 'Optimal') then
-								raise warning " ===== Could not find Optimal solution for GMP of period " + ipss +" of " + periods_selection;
+								raise warning " ===== Could not find Optimal solution for GMP of period " + ipss +" of " + SetAsString(periods_selection);
 								! Get Progress window parameters for reporting purposes
 								GMP_details(run_numberState,AY_GMP(ipss),ReferenceTime_IYP);
 								periods_selection := periods_selection - ipss;
@@ -8396,7 +8572,7 @@ Model IESA_Opt_Package {
 			    			if AY_GMP(ipss) then GMP::Instance::Delete(AY_GMP(ipss)); endif;
 			    			periods_selection := periods_selection - ipss;
 			 		endif;
-			 		StatusMessage("IYP... Periods " + periods_selection + "  are not solved yet!");
+			 		StatusMessage("IYP... Periods " + SetAsString(periods_selection) + "  are not solved yet!");
 			 	endfor;
 			    	if card(periods_selection) = 0 then BREAK; endif;
 			endwhile ;
