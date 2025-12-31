@@ -203,5 +203,9 @@
 		<Page Name="[Data Page] LCOP_secE" PageGUID="C2BBAC78-99E3-4610-98E8-70ACD7664E7E" />
 		<Page Name="[Data Page] LCOP_act" PageGUID="86243917-99FD-4386-AF2A-FF853877F7E6" />
 		<Page Name="[Data Page] CHP_output" PageGUID="1228E019-7D9C-4EB4-B04A-51ABAE6CCC5D" />
+		<Page Name="[Data Page] emissions_tech_capacity" PageGUID="759B1D74-7A16-4B8F-9E91-C4D1CC8A4EE7" />
+		<Page Name="[Data Page] emissions_tech_operation" PageGUID="A495D0AD-6693-4678-AF5F-B5A78ED36A3E" />
+		<Page Name="[Data Page] emissions_tech_all" PageGUID="63B9AEB7-7E6D-4D4A-936F-CCAE8716C930" />
+		<Page Name="[Data Page] emissions_act" PageGUID="28925AB8-BDAE-49E9-A0DD-B79EB0DAAC83" />
 	</Page>
 </PageManager>
